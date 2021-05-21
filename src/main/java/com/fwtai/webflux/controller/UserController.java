@@ -30,6 +30,12 @@ public class UserController{
         return userService.getUserForId(id);
     }
 
+    //http://127.0.0.1:8802/user/getUser/1
+    @GetMapping("/getUser/{id}")
+    public Mono<String> getUser(@PathVariable Long id) {
+        return userService.getUser(id);
+    }
+
     //http://127.0.0.1:8802/user/editUser/whj/4
     @GetMapping("/editUser/{name}/{id}")
     public Mono<Integer> editUser(@PathVariable String name,@PathVariable Long id) {
@@ -41,5 +47,19 @@ public class UserController{
     public Mono<String> addUser(final ServerHttpRequest request,final ServerHttpResponse response){
         final String name = request.getQueryParams().get("name").get(0);
         return userService.addUser(name);
+    }
+
+    //http://127.0.0.1:8802/user/listMap?age=6
+    @GetMapping(value = "/listMap",produces = MediaType.TEXT_HTML_VALUE)//todo 解决IE8请求时出现下载的bug
+    public Mono<String> listMap(final ServerHttpRequest request,final ServerHttpResponse response){
+        final String age = request.getQueryParams().get("age").get(0);
+        return userService.listMap(Integer.parseInt(age));
+    }
+
+    //http://127.0.0.1:8802/user/map?age=8
+    @GetMapping(value = "/map",produces = MediaType.TEXT_HTML_VALUE)//todo 解决IE8请求时出现下载的bug
+    public Mono<String> map(final ServerHttpRequest request,final ServerHttpResponse response){
+        final String age = request.getQueryParams().get("age").get(0);
+        return userService.map(Integer.parseInt(age));
     }
 }
