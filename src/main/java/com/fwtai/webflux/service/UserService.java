@@ -1,5 +1,6 @@
 package com.fwtai.webflux.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fwtai.webflux.domain.User;
 import com.fwtai.webflux.repository.userRepository;
@@ -28,10 +29,28 @@ public class UserService{
         return userRepository.getUserForId(id);
     }
 
-    // http://www.cocoachina.com/articles/42607
+    // sql 查询时,不能返回list_Map,也不能返回map,但是可以参考 http://www.cocoachina.com/articles/42607
     public Mono<String> getUser(final Long id){
         final Mono<User> user = userRepository.getUserForId(id);
         Mono<String> mono = user.map((t) -> t.getName());
+        return mono;
+    }
+
+    public Mono<String> getUserHashMap(final Long id){
+        final Mono<User> user = userRepository.getUserForId(id);
+        // todo 玩法1
+        final Mono<String> mono1 = user.map(user1 -> {
+            final JSONObject json = new JSONObject(10);
+            json.put("id",user1.getId());
+            json.put("name",user1.getName());
+            return json.toJSONString();
+        });
+        // todo 玩法2
+        final Mono<String> mono2 = user.map(user1 -> {
+            return JSON.toJSONString(user1);
+        });
+        // todo 玩法３
+        final Mono<String> mono = user.map(JSON::toJSONString);
         return mono;
     }
 

@@ -19,6 +19,7 @@
         Publisher 仅有一个 subscribe(); Subscriber就是订阅者,接收者;
 
         sql语句参数不支持 #{xxx} 会报错 Binding parameters is not supported for simple statement
+        sql 查询时,不能返回list_Map,也不能返回map,但是可以参考 http://www.cocoachina.com/articles/42607
 
     </description>
     <properties>

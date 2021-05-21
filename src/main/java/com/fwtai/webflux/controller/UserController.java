@@ -36,6 +36,12 @@ public class UserController{
         return userService.getUser(id);
     }
 
+    //http://127.0.0.1:8802/user/getUserHashMap/1
+    @GetMapping("/getUserHashMap/{id}")
+    public Mono<String> getUserHashMap(@PathVariable Long id) {
+        return userService.getUserHashMap(id);
+    }
+
     //http://127.0.0.1:8802/user/editUser/whj/4
     @GetMapping("/editUser/{name}/{id}")
     public Mono<Integer> editUser(@PathVariable String name,@PathVariable Long id) {
