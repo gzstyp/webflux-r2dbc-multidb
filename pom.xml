@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>com.fwtai</groupId>
-    <artifactId>webflux</artifactId>
+    <artifactId>webflux-r2dbc-multidb</artifactId>
     <version>v1.0.0</version>
     <description>
         基于spring webflux 构建响应式项目的多源数据库;
