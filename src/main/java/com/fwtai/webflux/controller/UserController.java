@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
  * todo 整个 reactive 就是class实现Publisher,对外发布信息,而Subscriber接收信息;
  *  Flux<T> 或 Mono<T> 均实现 implements CorePublisher<T>,而接口CorePublisher有继承Publisher;
  *  Publisher 仅有一个 subscribe(Subscriber<? super T> s); Subscriber就是订阅者,接收者
- */
+*/
 @RestController
 @RequestMapping("/user")
 public class UserController{
