@@ -3,6 +3,7 @@ package com.fwtai.webflux.controller;
 import com.fwtai.webflux.domain.User;
 import com.fwtai.webflux.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ public class UserController{
     }
 
     //http://127.0.0.1:8802/user/addUser?name=typ
-    @GetMapping("/addUser")
+    @GetMapping(value = "/addUser",produces = MediaType.TEXT_HTML_VALUE)//todo 解决IE8请求时出现下载的bug
     public Mono<String> addUser(final ServerHttpRequest request,final ServerHttpResponse response){
         final String name = request.getQueryParams().get("name").get(0);
         return userService.addUser(name);
