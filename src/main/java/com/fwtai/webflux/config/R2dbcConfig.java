@@ -87,7 +87,7 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration{
 
     @Bean(name = "readTransactionManager")
     public ReactiveTransactionManager readTransactionManager(){
-        org.springframework.data.r2dbc.connectionfactory.R2dbcTransactionManager readOnly = new org.springframework.data.r2dbc.connectionfactory.R2dbcTransactionManager(readConnectionFactory());
+        final R2dbcTransactionManager readOnly = new R2dbcTransactionManager(readConnectionFactory());
         readOnly.setEnforceReadOnly(true);
         return readOnly;
     }
@@ -96,36 +96,6 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration{
     public ReactiveTransactionManager writeTransactionManager(){
         return new R2dbcTransactionManager(writeConnectionFactory());
     }
-    //    @Bean(name = "transactionManager")
-    //    public ReactiveTransactionManager transactionManager() {
-    //        return new R2dbcTransactionManager(connectionFactory());
-    //    }
-    //    r2dbc": {
-    //            "status": "DOWN",
-    //            "components": {
-    //        "connectionFactory": {
-    //            "status": "DOWN",
-    //                    "details": {
-    //                "database": "MySQL",
-    //                        "validationQuery": "validate(REMOTE)",
-    //                        "error": "org.springframework.transaction.reactive.TransactionContextManager$NoTransactionInContextException: No transaction in context"
-    //            }
-    //        },
-    //        "readConnectionFactory": {
-    //            "status": "UP",
-    //                    "details": {
-    //                "database": "MySQL",
-    //                        "validationQuery": "validate(REMOTE)"
-    //            }
-    //        },
-    //        "writeConnectionFactory": {
-    //            "status": "UP",
-    //                    "details": {
-    //                "database": "MySQL",
-    //                        "validationQuery": "validate(REMOTE)"
-    //            }
-    //        }
-    //    }
 
     @Data
     class R2dbcPoolSettings{
@@ -184,17 +154,36 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration{
     }
     // ============================= private helper methods  =============================
 
-    private ConnectionPool getNewConnectionPool(R2dbcPoolSettings settings){
-        ConnectionFactory connectionFactory = ConnectionFactories.get(builder().option(DRIVER,StringUtils.defaultIfEmpty(settings.getDriver(),"pool")).option(PROTOCOL,StringUtils.defaultIfEmpty(settings.getProtocol(),"mysql")).option(HOST,settings.getHost()).option(PORT,settings.getPort()).option(USER,settings.getUsername()).option(PASSWORD,settings.getPassword()).option(DATABASE,settings.getDatabase()).option(CONNECT_TIMEOUT,settings.getConnectionTimeout()).option(SSL,false).option(Option.valueOf("zeroDate"),"use_null").option(PoolingConnectionFactoryProvider.MAX_SIZE,settings.getMaxSize())
-            //          .option(PoolingConnectionFactoryProvider.VALIDATION_QUERY, "select 1")
+    private ConnectionPool getNewConnectionPool(final R2dbcPoolSettings settings){
+        final ConnectionFactory connectionFactory = ConnectionFactories.get(builder()
+            .option(DRIVER,StringUtils.defaultIfEmpty(settings.getDriver(),"pool"))
+            .option(PROTOCOL,StringUtils.defaultIfEmpty(settings.getProtocol(),"mysql"))
+            .option(HOST,settings.getHost())
+            .option(PORT,settings.getPort())
+            .option(USER,settings.getUsername())
+            .option(PASSWORD,settings.getPassword())
+            .option(DATABASE,settings.getDatabase())
+            .option(CONNECT_TIMEOUT,settings.getConnectionTimeout())
+            .option(SSL,false)
+            .option(Option.valueOf("zeroDate"),"use_null")
+            .option(PoolingConnectionFactoryProvider.MAX_SIZE,settings.getMaxSize())
+            //.option(PoolingConnectionFactoryProvider.VALIDATION_QUERY, "select 1")
             .option(PoolingConnectionFactoryProvider.VALIDATION_DEPTH,ValidationDepth.LOCAL).build());
-        ConnectionPoolConfiguration configuration = getNewConnectionPoolBuilder(connectionFactory,settings).build();
+        final ConnectionPoolConfiguration configuration = getNewConnectionPoolBuilder(connectionFactory,settings).build();
         return new ConnectionPool(configuration);
     }
 
-    private ConnectionPoolConfiguration.Builder getNewConnectionPoolBuilder(ConnectionFactory connectionFactory,R2dbcPoolSettings settings){
-        return ConnectionPoolConfiguration.builder(connectionFactory).name(settings.getPoolName()).initialSize(settings.getInitialSize()).maxSize(settings.getMaxSize()).maxIdleTime(settings.getMaxIdleTime()).maxLifeTime(settings.getMaxLifeTime()).maxAcquireTime(settings.getMaxAcquireTime()).acquireRetry(settings.getAcquireRetry()).maxCreateConnectionTime(settings.getMaxCreateConnectionTime())
-            //                .validationQuery("select 1")
+    private ConnectionPoolConfiguration.Builder getNewConnectionPoolBuilder(final ConnectionFactory connectionFactory,final R2dbcPoolSettings settings){
+        return ConnectionPoolConfiguration.builder(connectionFactory)
+            .name(settings.getPoolName())
+            .initialSize(settings.getInitialSize())
+            .maxSize(settings.getMaxSize())
+            .maxIdleTime(settings.getMaxIdleTime())
+            .maxLifeTime(settings.getMaxLifeTime())
+            .maxAcquireTime(settings.getMaxAcquireTime())
+            .acquireRetry(settings.getAcquireRetry())
+            .maxCreateConnectionTime(settings.getMaxCreateConnectionTime())
+            //.validationQuery("select 1")
             .validationDepth(ValidationDepth.LOCAL).registerJmx(true);
     }
 }
