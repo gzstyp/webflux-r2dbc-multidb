@@ -18,6 +18,8 @@
         Flux 或 Mono均实现 implements CorePublisher,而接口CorePublisher有继承Publisher;
         Publisher 仅有一个 subscribe(); Subscriber就是订阅者,接收者;
 
+        sql语句参数不支持 #{xxx} 会报错 Binding parameters is not supported for simple statement
+
     </description>
     <properties>
         <java.version>1.8</java.version>
@@ -55,6 +57,11 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.2.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

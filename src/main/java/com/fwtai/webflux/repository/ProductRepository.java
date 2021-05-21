@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 public interface ProductRepository extends ReactiveCrudRepository<Product, Long> {
 
-    @Query("SELECT * FROM product WHERE supplier_id = :supplierId AND supplier_product_id = :supplierProductId ")
-    Mono<Product> findBySupplierIdAndSupplierProductId(Long supplierId, String supplierProductId);
+    @Query("SELECT id,name,createdAt FROM product WHERE id = :id")
+    Mono<Product> findBySupplierIdAndSupplierProductId(final Long id);
 
 }
