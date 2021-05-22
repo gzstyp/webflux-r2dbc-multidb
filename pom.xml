@@ -16,7 +16,7 @@
 
         整个 reactive 就是class实现Publisher,对外发布信息,而Subscriber接收信息;
         Flux 或 Mono均实现 implements CorePublisher,而接口CorePublisher有继承Publisher;
-        Publisher 仅有一个 subscribe(); Subscriber就是订阅者,接收者;
+        Publisher 仅有一个 subscribe(); Subscriber就是订阅者,接收者;Publisher和Subscriber之间互动完成编程!!!
 
         sql语句参数不支持 #{xxx} 会报错 Binding parameters is not supported for simple statement
         sql 查询时,不能返回list_Map,也不能返回map,但是可以参考 http://www.cocoachina.com/articles/42607
