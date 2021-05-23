@@ -42,5 +42,18 @@ public final class FluxDemo{
 
     public static void main(String[] args){
         createFluxFromData();
+        System.out.println("---------------");
+        createGenerate();
+    }
+
+    protected static void createGenerate(){
+        final Flux<Object> flux = Flux.generate(() -> 1,(state,sink) -> {//1 表示初始值是 1
+            sink.next("message #" + state);//把数字变为字符串
+            if(state == 10){
+                sink.complete();//如果数字已达到10时就关闭这个通道管道
+            }
+            return state + 1;//如果数字还没达到把 state + 1
+        });
+        subscribe("createGenerate,",flux);
     }
 }
