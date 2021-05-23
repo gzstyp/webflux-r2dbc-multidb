@@ -66,8 +66,8 @@ public class UserController{
     }
 
     //http://127.0.0.1:8802/user/list?ids=1,2,3
-    @GetMapping(value = "/list",produces = MediaType.TEXT_HTML_VALUE)//todo 解决IE8请求时出现下载的bug
-    public Mono<String> list(final ServerHttpRequest request,final ServerHttpResponse response){
+    @GetMapping(value = "/list",produces = MediaType.TEXT_HTML_VALUE)
+    public Mono<String> list(final ServerHttpRequest request){
         final String ids = request.getQueryParams().get("ids").get(0);
         return userService.list(Arrays.asList(ids.split(",")));
     }
