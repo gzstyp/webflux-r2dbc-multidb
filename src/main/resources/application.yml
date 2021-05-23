@@ -9,7 +9,7 @@ datasource:
     driver: pool
     protocol: mysql
     host: 192.168.3.66
-    port: 3306
+    port: 3310
     username: root
     password: rootFwtai
     database: r2dbcread
@@ -28,7 +28,7 @@ datasource:
     driver: pool
     protocol: mysql
     host: 192.168.3.66
-    port: 3306
+    port: 3310
     username: root
     password: rootFwtai
     database: r2dbcwrite
