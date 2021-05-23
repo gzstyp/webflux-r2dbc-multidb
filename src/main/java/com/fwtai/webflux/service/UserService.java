@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.fwtai.webflux.domain.User;
 import com.fwtai.webflux.repository.userRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.CoreSubscriber;
@@ -56,6 +58,13 @@ public class UserService{
     }
 
     public Mono<String> addUser(final String name){
+        final Mono<Integer> addUser = userRepository.addUser(name);
+        return addUser.map(row->{
+            return executeRows(row);
+        });
+    }
+
+    public Mono<String> jsonVoid(final String name){
         final Mono<Integer> addUser = userRepository.addUser(name);
         return addUser.map(row->{
             return executeRows(row);
@@ -116,6 +125,12 @@ public class UserService{
             json.put("msg","操作失败");
             return json.toJSONString();
         }
+    }
+
+    public static Mono<Void> responseJson(final String json,final ServerHttpResponse response){
+        response.getHeaders().add("Content-Type","text/html;charset=utf-8");
+        final DataBuffer db = response.bufferFactory().wrap(json.getBytes());
+        return response.writeWith(Mono.just(db));
     }
 }
 

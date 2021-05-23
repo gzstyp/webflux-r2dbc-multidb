@@ -42,6 +42,14 @@ public class UserController{
         return userService.getUserHashMap(id);
     }
 
+    //http://127.0.0.1:8802/user/jsonVoid?name=typ512
+    @GetMapping("/jsonVoid")
+    public Mono<String> jsonVoid(final ServerHttpRequest request,final ServerHttpResponse response){
+        response.getHeaders().add("Content-Type","text/html;charset=utf-8");
+        final String name = request.getQueryParams().get("name").get(0);
+        return userService.jsonVoid(name);
+    }
+
     //http://127.0.0.1:8802/user/editUser/whj/4
     @GetMapping(value = "/editUser/{name}/{id}",produces = MediaType.TEXT_HTML_VALUE)//todo 解决IE8请求时出现下载的bug
     public Mono<String> editUser(@PathVariable String name,@PathVariable Long id) {
