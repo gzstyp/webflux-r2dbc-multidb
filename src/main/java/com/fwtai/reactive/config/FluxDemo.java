@@ -23,5 +23,24 @@ public final class FluxDemo{
         final Flux<Integer> fromIterable = Flux.fromIterable(Arrays.asList(1,2,3,4,5,6));
         final Flux<Integer> fromStream = Flux.fromStream(Stream.of(1,2,3,4,5,6));
         final Flux<Integer> range = Flux.range(1,6);
+
+        subscribe("justInteger",justInteger);
+        subscribe("justString",justString);
+        subscribe("integerFlux",integerFlux);
+        subscribe("fromIterable",fromIterable);
+        subscribe("fromStream",fromStream);
+        subscribe("range",range);
+    }
+
+    //打开
+    protected static void subscribe(final String name,final Flux<?> flux){
+        flux.doOnSubscribe(subscription -> System.out.print("name->"+name))
+            .doOnNext(c ->System.out.print(c+","))
+            .doOnComplete(System.out::println)
+            .subscribe();//todo 这个方法是执行前面的代码,没有这个方法就不执行,它是发起调用!!!
+    }
+
+    public static void main(String[] args){
+        createFluxFromData();
     }
 }
