@@ -19,4 +19,8 @@ public interface userRepository extends ReactiveCrudRepository<User,Long> {
     @Modifying
     @Query("UPDATE product SET name = :name where id = :id")//todo 不支持 #{xxx} 会报错 Binding parameters is not supported for simple statement
     Mono<Integer> editUser(final String name,final Long id);
+
+    @Modifying
+    @Query("INSERT INTO product(`name`) VALUES (:name)")
+    Mono<Integer> addUser(final String name);
 }

@@ -21,8 +21,9 @@ public class UserService{
     private userRepository userRepository;
 
     @Transactional(transactionManager = "writeTransactionManager")
-    public Mono<Integer> editUser(final String name,final Long id) {
-        return userRepository.editUser(name,id);
+    public Mono<String> editUser(final String name,final Long id) {
+        final Mono<Integer> user = userRepository.editUser(name,id);
+        return user.map(this::executeRows);
     }
 
     public Mono<User> getUserForId(final Long id){
@@ -55,7 +56,10 @@ public class UserService{
     }
 
     public Mono<String> addUser(final String name){
-        return json("操作成功,"+name);
+        final Mono<Integer> addUser = userRepository.addUser(name);
+        return addUser.map(row->{
+            return executeRows(row);
+        });
     }
 
     public Mono<String> json(final String msg){
@@ -96,6 +100,21 @@ public class UserService{
             json.put("code",200);
             json.put("msg",object);
             return Mono.justOrEmpty(json.toJSONString());
+        }
+    }
+
+    public String executeRows(final int row){
+        if(row > 0){
+            final JSONObject json = new JSONObject(3);
+            json.put("code",200);
+            json.put("msg","操作成功");
+            json.put("data",row);
+            return json.toJSONString();
+        }else{
+            final JSONObject json = new JSONObject(2);
+            json.put("code",199);
+            json.put("msg","操作失败");
+            return json.toJSONString();
         }
     }
 }

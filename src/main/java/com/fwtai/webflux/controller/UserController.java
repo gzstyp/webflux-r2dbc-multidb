@@ -43,8 +43,8 @@ public class UserController{
     }
 
     //http://127.0.0.1:8802/user/editUser/whj/4
-    @GetMapping("/editUser/{name}/{id}")
-    public Mono<Integer> editUser(@PathVariable String name,@PathVariable Long id) {
+    @GetMapping(value = "/editUser/{name}/{id}",produces = MediaType.TEXT_HTML_VALUE)//todo 解决IE8请求时出现下载的bug
+    public Mono<String> editUser(@PathVariable String name,@PathVariable Long id) {
         return userService.editUser(name,id);
     }
 

@@ -149,7 +149,18 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration{
     // ============================= private helper methods  =============================
 
     private ConnectionPool getNewConnectionPool(final R2dbcPoolSettings settings){
-        final ConnectionFactory connectionFactory = ConnectionFactories.get(builder().option(DRIVER,StringUtils.defaultIfEmpty(settings.getDriver(),"pool")).option(PROTOCOL,StringUtils.defaultIfEmpty(settings.getProtocol(),"mysql")).option(HOST,settings.getHost()).option(PORT,settings.getPort()).option(USER,settings.getUsername()).option(PASSWORD,settings.getPassword()).option(DATABASE,settings.getDatabase()).option(CONNECT_TIMEOUT,settings.getConnectionTimeout()).option(SSL,false).option(Option.valueOf("zeroDate"),"use_null").option(PoolingConnectionFactoryProvider.MAX_SIZE,settings.getMaxSize())
+        final ConnectionFactory connectionFactory = ConnectionFactories.get(builder()
+            .option(DRIVER,StringUtils.defaultIfEmpty(settings.getDriver(),"pool"))
+            .option(PROTOCOL,StringUtils.defaultIfEmpty(settings.getProtocol(),"mysql"))
+            .option(HOST,settings.getHost())
+            .option(PORT,settings.getPort())
+            .option(USER,settings.getUsername())
+            .option(PASSWORD,settings.getPassword())
+            .option(DATABASE,settings.getDatabase())
+            .option(CONNECT_TIMEOUT,settings.getConnectionTimeout())
+            .option(SSL,false)
+            .option(Option.valueOf("zeroDate"),"use_null")
+            .option(PoolingConnectionFactoryProvider.MAX_SIZE,settings.getMaxSize())
             //.option(PoolingConnectionFactoryProvider.VALIDATION_QUERY, "select 1")
             .option(PoolingConnectionFactoryProvider.VALIDATION_DEPTH,ValidationDepth.LOCAL).build());
         final ConnectionPoolConfiguration configuration = getNewConnectionPoolBuilder(connectionFactory,settings).build();
@@ -157,7 +168,15 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration{
     }
 
     private ConnectionPoolConfiguration.Builder getNewConnectionPoolBuilder(final ConnectionFactory connectionFactory,final R2dbcPoolSettings settings){
-        return ConnectionPoolConfiguration.builder(connectionFactory).name(settings.getPoolName()).initialSize(settings.getInitialSize()).maxSize(settings.getMaxSize()).maxIdleTime(settings.getMaxIdleTime()).maxLifeTime(settings.getMaxLifeTime()).maxAcquireTime(settings.getMaxAcquireTime()).acquireRetry(settings.getAcquireRetry()).maxCreateConnectionTime(settings.getMaxCreateConnectionTime())
+        return ConnectionPoolConfiguration.builder(connectionFactory)
+            .name(settings.getPoolName())
+            .initialSize(settings.getInitialSize())
+            .maxSize(settings.getMaxSize())
+            .maxIdleTime(settings.getMaxIdleTime())
+            .maxLifeTime(settings.getMaxLifeTime())
+            .maxAcquireTime(settings.getMaxAcquireTime())
+            .acquireRetry(settings.getAcquireRetry())
+            .maxCreateConnectionTime(settings.getMaxCreateConnectionTime())
             //.validationQuery("select 1")
             .validationDepth(ValidationDepth.LOCAL).registerJmx(true);
     }
