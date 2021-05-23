@@ -14,12 +14,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
-import org.springframework.data.r2dbc.connectionfactory.R2dbcTransactionManager;
-import org.springframework.data.r2dbc.connectionfactory.lookup.AbstractRoutingConnectionFactory;
-import org.springframework.data.r2dbc.core.DatabaseClient;
-import org.springframework.data.r2dbc.core.ReactiveDataAccessStrategy;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
-import org.springframework.data.r2dbc.support.R2dbcExceptionTranslator;
+import org.springframework.r2dbc.connection.R2dbcTransactionManager;
+import org.springframework.r2dbc.connection.lookup.AbstractRoutingConnectionFactory;
 import org.springframework.transaction.ReactiveTransactionManager;
 import org.springframework.transaction.reactive.TransactionSynchronizationManager;
 import reactor.core.publisher.Mono;
@@ -41,7 +38,7 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.builder;
 
 @Slf4j
 @Configuration
-@EnableR2dbcRepositories(basePackages = "com.fwtai.webflux.repository", databaseClientRef = "databaseClient")
+@EnableR2dbcRepositories(basePackages = "com.fwtai.webflux.repository")
 public class R2dbcConfig extends AbstractR2dbcConfiguration{
 
     @Bean(name = "readDbPoolSettings")
@@ -73,16 +70,10 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration{
         final Map<String,ConnectionFactory> factories = new HashMap<>();
         factories.put(RoutingConnectionFactory.TRANSACTION_WRITE,writeConnectionFactory());
         factories.put(RoutingConnectionFactory.TRANSACTION_READ,readConnectionFactory());
-        connectionFactory.setDefaultTargetConnectionFactory(writeConnectionFactory());
-        connectionFactory.setTargetConnectionFactories(factories);
+        connectionFactory.setDefaultTargetConnectionFactory(writeConnectionFactory());//设置默认连接工厂
+        connectionFactory.setTargetConnectionFactories(factories);//连接工厂集合
         connectionFactory.setLenientFallback(true);
         return connectionFactory;
-    }
-
-    @Bean("databaseClient")
-    @Override
-    public DatabaseClient databaseClient(ReactiveDataAccessStrategy dataAccessStrategy,R2dbcExceptionTranslator exceptionTranslator){
-        return super.databaseClient(dataAccessStrategy,exceptionTranslator);
     }
 
     @Bean(name = "readTransactionManager")
@@ -98,7 +89,7 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration{
     }
 
     @Data
-    class R2dbcPoolSettings{
+    static class R2dbcPoolSettings{
 
         private String driver;
 
@@ -133,18 +124,21 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration{
         private int acquireRetry = 20;
     }
 
+    //r2dbc动态数据源的实现方案
     static class RoutingConnectionFactory extends AbstractRoutingConnectionFactory{
-
         public static final String TRANSACTION_READ = "read";
-
         public static final String TRANSACTION_WRITE = "write";
-
-        @Override
+        @Override//从**Context**获取读或写对应的**serverKey**
         protected Mono<Object> determineCurrentLookupKey(){
+            /*动态数据源;Mono.deferContextual(Mono::just).handle(((contextView,sink) -> {
+                if(contextView.hasKey("")){
+                    sink.next(TRANSACTION_WRITE);
+                }
+            }));*/
             return TransactionSynchronizationManager.forCurrentTransaction().map(it -> {
                 log.info("it.getCurrentTransactionName() : {}",it.getCurrentTransactionName());
                 log.info("it.isActualTransactionActive() : {}",it.isActualTransactionActive());
-                log.info("it.isCurrentTransactionReadOnly() : {}",it.isCurrentTransactionReadOnly());
+                log.info("是否走走读库 : {}",it.isCurrentTransactionReadOnly());
                 if(it.isActualTransactionActive() && it.isCurrentTransactionReadOnly()){
                     return TRANSACTION_READ;
                 }
@@ -155,18 +149,7 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration{
     // ============================= private helper methods  =============================
 
     private ConnectionPool getNewConnectionPool(final R2dbcPoolSettings settings){
-        final ConnectionFactory connectionFactory = ConnectionFactories.get(builder()
-            .option(DRIVER,StringUtils.defaultIfEmpty(settings.getDriver(),"pool"))
-            .option(PROTOCOL,StringUtils.defaultIfEmpty(settings.getProtocol(),"mysql"))
-            .option(HOST,settings.getHost())
-            .option(PORT,settings.getPort())
-            .option(USER,settings.getUsername())
-            .option(PASSWORD,settings.getPassword())
-            .option(DATABASE,settings.getDatabase())
-            .option(CONNECT_TIMEOUT,settings.getConnectionTimeout())
-            .option(SSL,false)
-            .option(Option.valueOf("zeroDate"),"use_null")
-            .option(PoolingConnectionFactoryProvider.MAX_SIZE,settings.getMaxSize())
+        final ConnectionFactory connectionFactory = ConnectionFactories.get(builder().option(DRIVER,StringUtils.defaultIfEmpty(settings.getDriver(),"pool")).option(PROTOCOL,StringUtils.defaultIfEmpty(settings.getProtocol(),"mysql")).option(HOST,settings.getHost()).option(PORT,settings.getPort()).option(USER,settings.getUsername()).option(PASSWORD,settings.getPassword()).option(DATABASE,settings.getDatabase()).option(CONNECT_TIMEOUT,settings.getConnectionTimeout()).option(SSL,false).option(Option.valueOf("zeroDate"),"use_null").option(PoolingConnectionFactoryProvider.MAX_SIZE,settings.getMaxSize())
             //.option(PoolingConnectionFactoryProvider.VALIDATION_QUERY, "select 1")
             .option(PoolingConnectionFactoryProvider.VALIDATION_DEPTH,ValidationDepth.LOCAL).build());
         final ConnectionPoolConfiguration configuration = getNewConnectionPoolBuilder(connectionFactory,settings).build();
@@ -174,15 +157,7 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration{
     }
 
     private ConnectionPoolConfiguration.Builder getNewConnectionPoolBuilder(final ConnectionFactory connectionFactory,final R2dbcPoolSettings settings){
-        return ConnectionPoolConfiguration.builder(connectionFactory)
-            .name(settings.getPoolName())
-            .initialSize(settings.getInitialSize())
-            .maxSize(settings.getMaxSize())
-            .maxIdleTime(settings.getMaxIdleTime())
-            .maxLifeTime(settings.getMaxLifeTime())
-            .maxAcquireTime(settings.getMaxAcquireTime())
-            .acquireRetry(settings.getAcquireRetry())
-            .maxCreateConnectionTime(settings.getMaxCreateConnectionTime())
+        return ConnectionPoolConfiguration.builder(connectionFactory).name(settings.getPoolName()).initialSize(settings.getInitialSize()).maxSize(settings.getMaxSize()).maxIdleTime(settings.getMaxIdleTime()).maxLifeTime(settings.getMaxLifeTime()).maxAcquireTime(settings.getMaxAcquireTime()).acquireRetry(settings.getAcquireRetry()).maxCreateConnectionTime(settings.getMaxCreateConnectionTime())
             //.validationQuery("select 1")
             .validationDepth(ValidationDepth.LOCAL).registerJmx(true);
     }

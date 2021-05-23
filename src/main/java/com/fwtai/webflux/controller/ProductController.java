@@ -36,7 +36,7 @@ public class ProductController {
     }
 
     //http://127.0.0.1:8802/products/saveProducts/car
-    @GetMapping("/products/saveProducts/{name}")
+    @GetMapping(value = "/products/saveProducts/{name}")
     public Mono<Product> saveProducts(@PathVariable String name) {
         return productService.saveProducts(name);
     }
