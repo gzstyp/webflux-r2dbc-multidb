@@ -1,7 +1,7 @@
-package com.fwtai.webflux.controller;
+package com.fwtai.reactive.controller;
 
-import com.fwtai.webflux.domain.User;
-import com.fwtai.webflux.service.UserService;
+import com.fwtai.reactive.domain.User;
+import com.fwtai.reactive.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
+
+import java.util.Arrays;
 
 /**
  * todo 整个 reactive 就是class实现Publisher,对外发布信息,而Subscriber接收信息;
@@ -63,17 +65,10 @@ public class UserController{
         return userService.addUser(name);
     }
 
-    //http://127.0.0.1:8802/user/listMap?age=6
-    @GetMapping(value = "/listMap",produces = MediaType.TEXT_HTML_VALUE)//todo 解决IE8请求时出现下载的bug
-    public Mono<String> listMap(final ServerHttpRequest request,final ServerHttpResponse response){
-        final String age = request.getQueryParams().get("age").get(0);
-        return userService.listMap(Integer.parseInt(age));
-    }
-
-    //http://127.0.0.1:8802/user/map?age=8
-    @GetMapping(value = "/map",produces = MediaType.TEXT_HTML_VALUE)//todo 解决IE8请求时出现下载的bug
-    public Mono<String> map(final ServerHttpRequest request,final ServerHttpResponse response){
-        final String age = request.getQueryParams().get("age").get(0);
-        return userService.map(Integer.parseInt(age));
+    //http://127.0.0.1:8802/user/list?ids=1,2,3
+    @GetMapping(value = "/list",produces = MediaType.TEXT_HTML_VALUE)//todo 解决IE8请求时出现下载的bug
+    public Mono<String> list(final ServerHttpRequest request,final ServerHttpResponse response){
+        final String ids = request.getQueryParams().get("ids").get(0);
+        return userService.list(Arrays.asList(ids.split(",")));
     }
 }

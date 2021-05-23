@@ -1,7 +1,7 @@
-package com.fwtai.webflux.controller;
+package com.fwtai.reactive.controller;
 
-import com.fwtai.webflux.domain.Product;
-import com.fwtai.webflux.service.ProductService;
+import com.fwtai.reactive.domain.Product;
+import com.fwtai.reactive.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

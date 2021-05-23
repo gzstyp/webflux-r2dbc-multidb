@@ -1,4 +1,4 @@
-package com.fwtai.webflux.config;
+package com.fwtai.reactive.config;
 
 import io.r2dbc.pool.ConnectionPool;
 import io.r2dbc.pool.ConnectionPoolConfiguration;
@@ -38,7 +38,7 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.builder;
 
 @Slf4j
 @Configuration
-@EnableR2dbcRepositories(basePackages = "com.fwtai.webflux.repository")
+@EnableR2dbcRepositories(basePackages = "com.fwtai.reactive.repository")
 public class R2dbcConfig extends AbstractR2dbcConfiguration{
 
     @Bean(name = "readDbPoolSettings")

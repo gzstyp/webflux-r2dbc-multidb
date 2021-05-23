@@ -1,6 +1,6 @@
-package com.fwtai.webflux.repository;
+package com.fwtai.reactive.repository;
 
-import com.fwtai.webflux.domain.Product;
+import com.fwtai.reactive.domain.Product;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;

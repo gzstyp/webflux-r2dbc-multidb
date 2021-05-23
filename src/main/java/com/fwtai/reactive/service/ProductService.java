@@ -1,6 +1,6 @@
-package com.fwtai.webflux.service;
+package com.fwtai.reactive.service;
 
-import com.fwtai.webflux.domain.Product;
+import com.fwtai.reactive.domain.Product;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

@@ -1,25 +1,18 @@
-package com.fwtai.webflux.domain;
+package com.fwtai.reactive.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
 
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
 @Table("product")
-public class Product{
+public final class User{
 
     @Id
     private Long id;
 
+    @NotBlank(message="名称不能为空")
     private String name;
-
-    private LocalDateTime createdAt;
 
     public Long getId(){
         return id;
@@ -37,11 +30,8 @@ public class Product{
         this.name = name;
     }
 
-    public LocalDateTime getCreatedAt(){
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt){
-        this.createdAt = createdAt;
+    @Override
+    public String toString(){
+        return "User{" + "id=" + id + ", name='" + name + '\'' + '}';
     }
 }

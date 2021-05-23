@@ -1,8 +1,8 @@
-package com.fwtai.webflux.service.impl;
+package com.fwtai.reactive.service.impl;
 
-import com.fwtai.webflux.domain.Product;
-import com.fwtai.webflux.repository.ProductRepository;
-import com.fwtai.webflux.service.ProductService;
+import com.fwtai.reactive.domain.Product;
+import com.fwtai.reactive.repository.ProductRepository;
+import com.fwtai.reactive.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Flux<Product> getProducts(List<Long> ids) {
+    public Flux<Product> getProducts(final List<Long> ids) {
         return Flux.fromIterable(ids).flatMap(id -> productRepository.findById(id));
         // return productRepository.findAllById(ids);
     }
