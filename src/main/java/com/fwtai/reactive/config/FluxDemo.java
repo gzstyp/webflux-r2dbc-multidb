@@ -1,6 +1,7 @@
 package com.fwtai.reactive.config;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -37,13 +38,14 @@ public final class FluxDemo{
         flux.doOnSubscribe(subscription -> System.out.print("name->"+name))
             .doOnNext(c ->System.out.print(c+","))
             .doOnComplete(System.out::println)
-            .subscribe();//todo 这个方法是执行前面的代码,没有这个方法就不执行,它是发起调用!!!
+            .subscribe();//todo 这个方法是执行前面的代码,没有这个方法就不执行,它是发起调用!!!即当调用 subscribe()或 block()都会立刻打开管道或运行这个管道
     }
 
     public static void main(String[] args){
         createFluxFromData();
         System.out.println("---------------");
         createGenerate();
+        monoBlock();
     }
 
     protected static void createGenerate(){
@@ -55,5 +57,12 @@ public final class FluxDemo{
             return state + 1;//如果数字还没达到把 state + 1
         });
         subscribe("createGenerate,",flux);
+    }
+
+    protected static void monoBlock(){
+        final Mono<Integer> mono = Mono.just(1);
+        mono.doOnSubscribe(subscription -> System.out.println("运行subscription方法"))
+            .doOnNext(integer -> System.out.println(integer))
+            .block();//todo 这个方法是执行前面的代码,没有这个方法就不执行,它是发起调用!!!即当调用 block()或 subscribe()都会立刻打开管道或运行这个管道
     }
 }
