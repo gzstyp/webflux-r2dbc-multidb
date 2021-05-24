@@ -63,6 +63,6 @@ public final class FluxDemo{
         final Mono<Integer> mono = Mono.just(1);
         mono.doOnSubscribe(subscription -> System.out.println("运行subscription方法"))
             .doOnNext(integer -> System.out.println(integer))
-            .block();//todo 这个方法是执行前面的代码,没有这个方法就不执行,它是发起调用!!!即当调用 block()或 subscribe()都会立刻打开管道或运行这个管道
+            .block();//todo,它会阻塞,除非保证已调用完;尽量减少使用! 这个方法是执行前面的代码,没有这个方法就不执行,它是发起调用!!!即当调用 block()或 subscribe()都会立刻打开管道或运行这个管道
     }
 }
