@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
@@ -67,7 +68,7 @@ public class UserController{
 
     //http://127.0.0.1:8802/user/list?ids=1,2,3
     @GetMapping(value = "/list",produces = MediaType.TEXT_HTML_VALUE)
-    public Mono<String> list(final ServerHttpRequest request){
+    public Flux<String> list(final ServerHttpRequest request){
         final String ids = request.getQueryParams().get("ids").get(0);
         return userService.list(Arrays.asList(ids.split(",")));
     }

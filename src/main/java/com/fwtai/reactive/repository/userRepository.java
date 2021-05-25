@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public interface userRepository extends ReactiveCrudRepository<User,Long> {
 
-    @Query("SELECT id,name FROM product WHERE id = :id")
+    @Query("SELECT id,name,created_at FROM product WHERE id = :id")
     Mono<User> getUserForId(final Long id);
 
     @Query("SELECT id,name FROM product WHERE id = :id")

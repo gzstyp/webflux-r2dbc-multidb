@@ -70,7 +70,7 @@ public class UserService{
         });
     }
 
-    public Mono<String> list(final List<String> list){
+    public Flux<String> list(final List<String> list){
         final ArrayList<Long> ids = new ArrayList<>(list.size());
         list.forEach(v->{
             ids.add(Long.parseLong(v));
@@ -96,11 +96,20 @@ public class UserService{
                 return ToolClient.queryEmpty();
             }
         });*/
+        //Flux.fromIterable(userRepository.findAll().).filterWhen();
 
 
-        final JSONObject json = new JSONObject(2);
+        Flux<String> map = userRepository.findAll().map(user -> {
+            final JSONObject json = new JSONObject(2);
+            json.put("id",user.getId());
+            json.put("name",user.getName());
+            return json.toJSONString();
+        });
+        return map;
+
+        /*final JSONObject json = new JSONObject(2);
         json.put("code",200);
         json.put("msg",list);
-        return Mono.justOrEmpty(json.toJSONString());
+        return Mono.justOrEmpty(json.toJSONString());*/
     }
 }

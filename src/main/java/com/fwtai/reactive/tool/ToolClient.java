@@ -2,7 +2,9 @@ package com.fwtai.reactive.tool;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fwtai.reactive.config.ConfigFile;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Mono;
 
@@ -227,6 +229,12 @@ public final class ToolClient{
         return false;
     }
 
+    // todo 解决IE8请求时出现下载的bug,推荐使用
+    public static Mono<Void> responseJson(final String json,final ServerHttpResponse response){
+        response.getHeaders().add("Content-Type","text/html;charset=utf-8");
+        final DataBuffer db = response.bufferFactory().wrap(json.getBytes());
+        return response.writeWith(Mono.just(db));
+    }
 
     /**
      * 基于注解且仅在在controller层调用,结合 MediaType 是ok
@@ -235,7 +243,7 @@ public final class ToolClient{
      * @QQ 444141300
      * @创建时间 2021/2/7 17:29
     */
-    public static Mono<String> responseAnnotatedJson(final String json){
+    public static Mono<String> responseJson(final String json){
         if(json == null || json.isEmpty()){
             return Mono.justOrEmpty(queryEmpty());
         }
