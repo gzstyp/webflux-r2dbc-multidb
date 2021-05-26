@@ -25,7 +25,7 @@ public interface userRepository extends ReactiveCrudRepository<User,Long> {
     @Query("INSERT INTO product(`name`) VALUES (:name)")
     Mono<Integer> addUser(final String name);
 
-    @Query("select id,name,created_at from product limit :section,:pageSize")
+    @Query("select id,name from product limit :section,:pageSize")
     Flux<User> listData(final int section,final int pageSize);
 
     @Query("SELECT COUNT(1) total FROM product")
