@@ -4,6 +4,7 @@ import com.fwtai.reactive.domain.User;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
@@ -23,4 +24,10 @@ public interface userRepository extends ReactiveCrudRepository<User,Long> {
     @Modifying
     @Query("INSERT INTO product(`name`) VALUES (:name)")
     Mono<Integer> addUser(final String name);
+
+    @Query("select id,name,created_at from product limit :section,:pageSize")
+    Flux<User> listData(final int section,final int pageSize);
+
+    @Query("SELECT COUNT(1) total FROM product")
+    Mono<Integer> listTotal();
 }

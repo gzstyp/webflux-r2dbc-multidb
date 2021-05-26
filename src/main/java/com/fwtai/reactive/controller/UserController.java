@@ -72,4 +72,11 @@ public class UserController{
         final String ids = request.getQueryParams().get("ids").get(0);
         return userService.list(Arrays.asList(ids.split(",")));
     }
+
+    //http://127.0.0.1:8802/user/listData?current=1
+    @GetMapping(value = "/listData",produces = MediaType.TEXT_HTML_VALUE)
+    public Flux<String> listData(final ServerHttpRequest request){
+        final String current = request.getQueryParams().get("current").get(0);
+        return userService.listData(Integer.parseInt(current));
+    }
 }

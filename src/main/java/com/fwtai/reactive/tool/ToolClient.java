@@ -76,6 +76,10 @@ public final class ToolClient{
         return json.toJSONString();
     }
 
+    public static String queryData(final Object data){
+        return jsonData("操作成功",data);
+    }
+
     /**
      * 生成自定义的json对象,直接采用JSONObject封装,执行效率会更高;适用于为增、删、改操作,一般在service调用
      * @param rows 执行后受影响的行数

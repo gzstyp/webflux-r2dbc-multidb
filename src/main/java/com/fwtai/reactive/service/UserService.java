@@ -58,9 +58,7 @@ public class UserService{
 
     public Mono<String> addUser(final String name){
         final Mono<Integer> addUser = userRepository.addUser(name);
-        return addUser.map(row->{
-            return ToolClient.executeRows(row);
-        });
+        return addUser.map(ToolClient::executeRows);
     }
 
     public Mono<String> jsonVoid(final String name){
@@ -114,7 +112,37 @@ public class UserService{
     }
 
     // https://blog.csdn.net/hb407033/article/details/103778235
-    public void findDataPage(final String name){
+    public Flux<String> listData(final int current){
+        final Mono<Integer> total = userRepository.listTotal();
+        final Mono<String> mono = total.map(result -> {
+            if(result > 0){
+                return ToolClient.queryData(result);
+            }else{
+                return ToolClient.queryEmpty();
+            }
+        });
+        final int pageSize = 4;
+        final int section = (current - 1) * pageSize;
+        final Flux<User> listData = userRepository.listData(section,pageSize);
+        //Flux<String> fluxs = Flux.push()
+        /*listData.flatMapIterable(user -> {
+            final JSONObject json = new JSONObject(3);
+            json.put("id",user.getId());
+            json.put("name",user.getName());
+            json.put("created",user.getCreated());
+            return json.toJSONString();
+        });*/
 
+        Flux<String> map = userRepository.listData(section,pageSize).map(user -> {
+            /*final JSONObject json = new JSONObject(3);
+            json.put("id",user.getId());
+            json.put("name",user.getName());
+            json.put("created",user.getCreated());
+            return json.toJSONString();*/
+            return ","+JSON.toJSONString(user);
+        });
+        Flux<String> fluxs = Flux.concat(mono).concatWith(map);
+        return fluxs;
+        //return Mono.just("操作成功");
     }
 }
