@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 /**
  * todo 整个 reactive 就是class实现Publisher,对外发布信息,而Subscriber接收信息;
@@ -78,5 +79,25 @@ public class UserController{
     public Flux<String> listData(final ServerHttpRequest request){
         final String current = request.getQueryParams().get("current").get(0);
         return userService.listData(Integer.parseInt(current));
+    }
+
+    //http://127.0.0.1:8802/user/stringMono
+    @GetMapping(value = "/stringMono",produces = MediaType.TEXT_HTML_VALUE)
+    public Mono<String> stringMono(){
+        final Mono<String> supplier = Mono.fromSupplier(() -> getString());
+        return supplier;
+    }
+
+    public String getString(){
+        return "game over";
+    }
+
+    //http://127.0.0.1:8802/user/stringFlux
+    @GetMapping(value = "/stringFlux",produces = MediaType.TEXT_HTML_VALUE)
+    public Flux<String> stringFlux(){
+        Flux<String> flux = Flux.fromStream(IntStream.range(1,5).mapToObj(i -> {
+            return i + "转换obj";
+        }));
+        return flux;
     }
 }

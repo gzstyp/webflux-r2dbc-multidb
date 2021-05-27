@@ -123,6 +123,13 @@ public class UserService{
         final int pageSize = 4;
         final int section = (current - 1) * pageSize;
         final Flux<User> listData = userRepository.listData(section,pageSize);
+        listData.collectList().flatMap(item ->{
+            if(item.isEmpty()){
+                return null;
+            }else{
+                return null;
+            }
+        });
         //Flux<String> fluxs = Flux.push()
         /*listData.flatMapIterable(user -> {
             final JSONObject json = new JSONObject(3);
@@ -139,6 +146,13 @@ public class UserService{
             json.put("created",user.getCreated());
             return json.toJSONString();*/
             return ","+JSON.toJSONString(user);
+        });
+        Flux.concat(map).flatMap(str ->{
+            final String[] split = str.split(",");
+            if(split.length > 0){
+                return null;
+            }
+            return null;
         });
         Flux<String> fluxs = Flux.concat(mono).concatWith(map);
         return fluxs;
