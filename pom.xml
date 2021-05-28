@@ -21,6 +21,16 @@
         sql语句参数不支持 #{xxx} 会报错 Binding parameters is not supported for simple statement
         sql 查询时,不能返回list_Map,也不能返回map,但是可以参考 http://www.cocoachina.com/articles/42607
 
+        如果将 迭代器模式 看作是 拉模式，那 观察者模式 便是 推模式。
+
+        被订阅者 (Publisher) 主动推送数据给 订阅者 (Subscriber)，触发 onNext() 方法。异常和完成时触发另外两个方法。
+        被订阅者 (Publisher) 发生异常，则触发 订阅者 (Subscriber) 的 onError() 方法进行异常捕获处理。
+        被订阅者 (Publisher) 每次推送都会触发一次 onNext() 方法。所有的推送完成且无异常时，onCompleted() 方法将 在最后 触发一次。
+
+        如果 Publisher 发布消息太快了，超过了 Subscriber 的处理速度，那怎么办？这就是 Backpressure 的由来。Reactive Programming 框架需要提供 背压机制，使得 Subscriber 能够控制 消费消息 的速度。
+
+        不能直接返回Mono_Map或Mono_JSONObject
+
     </description>
     <properties>
         <java.version>1.8</java.version>

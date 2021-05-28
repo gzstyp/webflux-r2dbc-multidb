@@ -154,8 +154,15 @@ public class UserService{
             }
             return null;
         });
-        Flux<String> fluxs = Flux.concat(mono).concatWith(map);
+        Flux<String> map1 = userRepository.listData(section,pageSize).map(user -> {
+            if(user == null){
+                return null;
+            }else{
+                return JSON.toJSONString(user);
+            }
+        });
+        final Flux<String> fluxs = Flux.concat(mono).concatWith(map);
+        final Flux<String> merge = Flux.merge(mono,map);//todo 数据库经常报错,不推荐
         return fluxs;
-        //return Mono.just("操作成功");
     }
 }

@@ -15,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class ToolClient{
 
-
     /**
      * 查询时得到的数据为空返回的json字符串
      * @作者 田应平

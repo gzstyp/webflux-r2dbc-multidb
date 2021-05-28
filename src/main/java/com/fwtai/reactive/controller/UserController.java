@@ -1,5 +1,6 @@
 package com.fwtai.reactive.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fwtai.reactive.domain.User;
 import com.fwtai.reactive.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +79,17 @@ public class UserController{
     @GetMapping(value = "/listData",produces = MediaType.TEXT_HTML_VALUE)
     public Flux<String> listData(final ServerHttpRequest request){
         final String current = request.getQueryParams().get("current").get(0);
-        return userService.listData(Integer.parseInt(current));
+        final Flux<String> listData = userService.listData(Integer.parseInt(current));
+        listData.collectMap(m->{
+            System.out.println(m);
+            return m;
+        });
+        //它会拆分
+        listData.subscribe(s->{
+            System.out.println("-------------分隔线-------------");
+            System.out.println(s);
+        });
+        return listData;
     }
 
     //http://127.0.0.1:8802/user/stringMono
@@ -99,5 +110,14 @@ public class UserController{
             return i + "转换obj";
         }));
         return flux;
+    }
+
+    //http://127.0.0.1:8802/user/jsonObject
+    @GetMapping(value = "/jsonObject",produces = MediaType.TEXT_HTML_VALUE)
+    public Mono<String> jsonObject(){
+        final JSONObject json = new JSONObject(3);
+        json.put("code",200);
+        json.put("msg","操作成功");
+        return Mono.justOrEmpty(json.toJSONString());
     }
 }
