@@ -92,6 +92,15 @@ public class UserController{
         return listData;
     }
 
+    //http://127.0.0.1:8802/user/listData2?current=1&name=t
+    @GetMapping(value = "/listData2",produces = MediaType.TEXT_HTML_VALUE)
+    public Flux<String> listData2(final ServerHttpRequest request){
+        final String current = request.getQueryParams().get("current").get(0);
+        final String name = request.getQueryParams().get("name").get(0);
+        final Flux<String> listData = userService.listData2(Integer.parseInt(current),name);
+        return listData;
+    }
+
     //http://127.0.0.1:8802/user/stringMono
     @GetMapping(value = "/stringMono",produces = MediaType.TEXT_HTML_VALUE)
     public Mono<String> stringMono(){

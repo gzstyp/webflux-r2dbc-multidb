@@ -165,4 +165,28 @@ public class UserService{
         final Flux<String> merge = Flux.merge(mono,map);//todo 数据库经常报错,不推荐
         return fluxs;
     }
+
+    public Flux<String> listData2(final int current,final String name){
+        final Mono<Integer> total = userRepository.listTotal2(name);
+        final Mono<String> mono = total.map(result -> {
+            if(result > 0){
+                return ToolClient.queryData(result);
+            }else{
+                return ToolClient.queryEmpty();
+            }
+        });
+        final int pageSize = 4;
+        final int section = (current - 1) * pageSize;
+        final Flux<User> listData = userRepository.listData2(section,pageSize,name);
+        final Mono<String> list = listData.collectList().flatMap(item -> {
+            if(item.isEmpty()){
+                //return Mono.just(ToolClient.queryEmpty());
+                return Mono.just(JSON.toJSON(item).toString());//todo 前端判断是否为 [] 即可!!!
+            }else{
+                return Mono.just(JSON.toJSON(item).toString());
+            }
+        });
+        final Flux<String> fluxs = Flux.concat(mono).concatWith(Mono.just(",")).concatWith(list);
+        return fluxs;
+    }
 }

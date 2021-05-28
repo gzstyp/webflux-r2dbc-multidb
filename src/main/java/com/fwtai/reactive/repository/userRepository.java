@@ -30,4 +30,10 @@ public interface userRepository extends ReactiveCrudRepository<User,Long> {
 
     @Query("SELECT COUNT(1) total FROM product")
     Mono<Integer> listTotal();
+
+    @Query("select id,name from product where name LIKE concat('%',:name,'%') limit :section,:pageSize")
+    Flux<User> listData2(final int section,final int pageSize,final String name);
+
+    @Query("SELECT COUNT(1) total FROM product where name LIKE concat('%',:name,'%')")
+    Mono<Integer> listTotal2(final String name);
 }
