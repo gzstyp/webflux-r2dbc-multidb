@@ -31,7 +31,7 @@
 
         不能直接返回Mono_Map或Mono_JSONObject
 
-        分页问题尚未解决
+        分页问题尚未解决,后期是否解决再使用。
 
     </description>
     <properties>
